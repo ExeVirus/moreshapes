@@ -16,7 +16,8 @@ bool Mesh::add_quad(double3x4 in_verticies, double2x4 in_tex_coords, uint64_t gr
 
 bool Mesh::export_mesh(char* filename) const
 {
-    return export_mesh(std::string(filename));
+    std::string filename_str = filename;
+    return export_mesh(filename_str);
 }
 
 bool Mesh::add_triangle(double3x3 in_verticies, double2x3 in_tex_coords, uint64_t group)
