@@ -2,8 +2,8 @@ cmake_minimum_required (VERSION 3.0)
 project (morecurves)
 
 add_subdirectory (mclib)
-add_subdirectory (mclua)
 add_subdirectory (lua)
+add_subdirectory (mclua)
 
 add_executable (${PROJECT_NAME} main.cpp)
 

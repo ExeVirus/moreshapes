@@ -2,27 +2,19 @@
 #include "mc_lua.h"
 #include <iostream>
 
-int main()
+int main(int argc, char** argv)
 {
-    // Mesh mesh;
-    // mesh.add_quad({
-    //         {0,0,0},
-    //         {0,0,1},
-    //         {1,0,1},
-    //         {1,0,0}
-    //     }, {
-    //         {0,0},
-    //         {0,1},
-    //         {1,0},
-    //         {1,1}
-    //     }, 1);
-
-    //mesh.export_mesh("test.obj");
-    //mesh.test_export_mesh();
+    if(!parseInputs(argc, argv)) return 0;
 
     lua_State* lua = lua_open();  // Open Lua
     luaL_openlibs(lua);
-    luaL_dostring(lua, "io.write(\"Hello World\")");
+    MC_LUA::register_functions(lua);
+
+    if(luaL_dofile(lua, "run.lua")) {
+        std::cerr << "-- " << lua_tostring(lua, -1) << std::endl;
+        lua_pop(lua, 1);
+    };
+    
     lua_close(lua);
 
     return 0;
