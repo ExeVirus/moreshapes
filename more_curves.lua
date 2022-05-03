@@ -12,8 +12,10 @@
 --
 ------------------------------
 
--- line1 = outer_curve_points (starts at 0,0, ends at 0.646, 1.354)
--- line2 = inner_curve_points (starts at 1,0, ends at 1.354, 0.646)
+-- line1 = outer_curve_points (starts at 0,0 ends at 0.646, 1.354)
+-- line2 = inner_curve_points (starts at 1,0 ends at 1.354, 0.646)
+--math to describe:
+-- midpoint starts at 0.5,0, and ends at 0,1. 
 
 -- 2d_2curve_closed(line1, line2)
 -- export_mesh("a.obj")
