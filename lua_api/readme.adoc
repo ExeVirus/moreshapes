@@ -7,7 +7,7 @@ Exports valid minetest obj file, respecting groups (for texturing), using normal
 
 add_triangle(v1x, v1y, v1z, v2x, ...)::
 
-Tip: This function is never meant to be hand-typed, unless you are extending functionality.
+TIP: This function is never meant to be hand-typed, unless you are extending functionality.
 
 This function takes 25 numbers, in the following order:
 ....
