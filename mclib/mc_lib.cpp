@@ -14,9 +14,11 @@ bool Mesh::export_mesh(char* filename, bool export_normals) const
                 write_normal(norm, meshfile);
         }
         for (int i = 0; i < faces.size(); i++) {
-            meshfile << "g " << i + 1 << std::endl;
-            for (auto & face : faces[i])
-                write_face(face, meshfile, export_normals);
+            if(!faces[i].empty()) {
+                meshfile << "g " << i + 1 << std::endl;
+                for (auto & face : faces[i])
+                    write_face(face, meshfile, export_normals);
+            }
         }
         meshfile.close();
         return true;
@@ -149,29 +151,30 @@ void Mesh::error(const std::string& error) const
     std::cout << error << std::endl;
 }
 
-bool parseInputs(int argc, char** argv) {
+std::string parseInputs(int argc, char** argv) {
     auto usage = [] {
         std::cout   << "---------morecurves---------"   << std::endl
                     << "usage: "                        << std::endl
                     << "morecurves \"[anyfile].lua\""   << std::endl;
     };
+    std::string filename;
     if(argc != 2) {
         usage();
-        return false;
+        return "";
     }else {
-        std::string filename = (argv[1]);
+        filename = (argv[1]);
         if(filename.substr(filename.length()-4) != ".lua")
         {
             std::cout << "error: " << filename << " does not specify a '.lua' file." << std::endl;
-            return false;
+            return "";
         };
         std::ifstream testfile(filename, std::ios::in);
         if(!testfile.is_open()) {
             std::cout << filename << " does not exist or cannot be opened." << std::endl;
-            return false;
+            return "";
         }else{
             testfile.close();
         }
     }
-    return true;
+    return filename;
 }

@@ -1,0 +1,42 @@
+= Morecurves Lua API
+:toc:
+
+== Built-in Lua Functions
+export_mesh("filename"[, export_normals=true])::
+Exports valid minetest obj file, respecting groups (for texturing), using normals by default.
+
+add_triangle(v1x, v1y, v1z, v2x, ...)::
+
+Tip: This function is never meant to be hand-typed, unless you are extending functionality.
+
+This function takes 25 numbers, in the following order:
+....
+Vertex 1: x, y, z
+Vertex 2: x, y, z
+Vertex 3: x, y, z
+Vertex 1-Normal: x, y, z
+Vertex 2-Normal: x, y, z
+Vertex 3-Normal: x, y, z
+Vertex 1-UV: x, y
+Vertex 2-UV: x, y
+Vertex 3-UV: x, y
+Group Number
+....
+
+reset_mesh()::
+Delete any previously added data to the current mesh.
+
+== Common Shape Functions
+cube(v3_position,v3_dimensions,g1=1,g2=2,g3=3,g4=4,g5=5,g6=6)::
+.
+quad(v8_pos1, v8_pos2, v8pos3, v8pos4, group_number)::
+.
+aligned_rectangular_prism(v8_position, v8_dimensions,g1=1,g2=2,g3=3,g4=4,g5=5,g6=6)::
+.
+flat_shaded_quad(v5_pos1, v5_pos2, v5_pos3, v5_pos4)::
+.
+
+== 2D Curve Functions
+
+
+== 3D Curve Functions

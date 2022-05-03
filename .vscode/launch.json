@@ -10,7 +10,9 @@
             "request": "launch",
             "target": "./build/morecurves.exe",
             "cwd": "${workspaceRoot}",
-            "valuesFormatting": "parseText"
+            "valuesFormatting": "parseText",
+            "arguments": "run.lua",
+            "terminal": ""
         }
     ]
 }

@@ -45,4 +45,4 @@ class Mesh {
         std::vector<std::vector<Face>> faces; //first index is group number
 };
 
-bool parseInputs(int argc, char** argv);
+std::string parseInputs(int argc, char** argv);
