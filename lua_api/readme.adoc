@@ -26,81 +26,13 @@ Group Number
 reset_mesh()::
 Delete any previously added data to the current mesh.
 
-== Basic Data Objects
-
-v2::
-....
-{
-    x=#.#
-    y=#.#
-}
-....
-
-v3::
-....
-{
-    x=#.#
-    y=#.#
-    z=#.#
-
-}
-....
-
-v4::
-....
-{
-    x=#.#
-    y=#.#
-    nx=#.#
-    ny=#.#
-}
-....
-
-v5::
-....
-{
-    x=#.#
-    y=#.#
-    z=#.#
-    tx=#.#
-    ty=#.#
-
-}
-....
-
-v6::
-....
-{
-    x=#.#
-    y=#.#
-    z=#.#
-    nx=#.#
-    ny=#.#
-    nz=#.#
-}
-....
-
-v8::
-....
-{
-    x=#.#
-    y=#.#
-    z=#.#
-    nx=#.#
-    ny=#.#
-    nz=#.#
-    tx=#.#
-    ty=#.#
-}
-....
-
 == Common Shape Functions
-cube(v3_position,v3_dimensions,g1=1,g2=2,g3=3,g4=4,g5=5,g6=6)::
+axis_aligned_rectangular_prism(v8_bottom_left_corner, v8_dimensions,g1=1,g2=2,g3=3,g4=4,g5=5,g6=6)::
 .
-quad(v8_pos1, v8_pos2, v8pos3, v8pos4, group_number)::
-.
-aligned_rectangular_prism(v8_position, v8_dimensions,g1=1,g2=2,g3=3,g4=4,g5=5,g6=6)::
-.
+
+quad(v8_pos1, v8_pos2, v8pos3, group_number)::
+This function will calculate normals for you, using the 3 positions and winding order, don't bother filling out the normals, they will be overwritten.
+
 flat_shaded_quad(v5_pos1, v5_pos2, v5_pos3, v5_pos4)::
 .
 

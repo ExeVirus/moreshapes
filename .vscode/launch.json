@@ -11,7 +11,7 @@
             "target": "./build/morecurves.exe",
             "cwd": "${workspaceRoot}",
             "valuesFormatting": "parseText",
-            "arguments": "run.lua",
+            "arguments": "more_curves.lua",
             "terminal": ""
         }
     ]
