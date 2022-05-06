@@ -59,10 +59,23 @@ local function v5(x,y,z,tx,ty)
     return v(x,y,z,0,0,0,tx,ty)
 end
 
-shapes.quad(
-    v5(0,0,0,0,0),
-    v5(0,0,-1,0,1),
-    v5(1,0,-1,1,1),
-    1
-)
+local function v3(x,y,z)
+    return v(x,y,z,0,0,0,0,0)
+end
+
+-- shapes.rect(    v5(0,0,0,0,0),
+--                 v5(1,0,0,0,1),
+--                 v5(1,0,1,1,1),    1)
+-- shapes.rect(    v5(2,0,0,0,0),
+--                 v5(3,0,0,0,1),
+--                 v5(3,0,.5,1,1),    1)
+local aarp = shapes.axis_aligned_rectangular_prism
+--aarp(v3(0,0,0),v3(1.5,1.5,1.5), true)
+
+local quad = shapes.quad
+quad(   v5(0,   0,  0,   0,0),
+        v5(0,   1.5,0, 0,1.5),
+        v5(0,   1,1,     1,1),    
+        v5(0,   0,  1,   1,0),  1)
+
 export_mesh("a.obj")

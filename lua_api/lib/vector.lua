@@ -204,6 +204,13 @@ function vector.divide(a, b)
     return r
 end
 
+function vector.determinant(a,b,c)
+    validate_vector(a)
+    validate_vector(b)
+    validate_vector(c)
+    return (a.x*(b.y*c.z-b.z*c.y)-a.y*(b.x*c.z-b.z*c.x)+a.z*(b.x*c.y-b.y*c.x))
+end
+
 local function sin(x)
 	if x % math.pi == 0 then
 		return 0
