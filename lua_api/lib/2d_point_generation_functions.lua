@@ -1,0 +1,45 @@
+shapes.points = {}
+local vector = shapes.vector
+
+function shapes.points.superellipse_polar_point(theta, radius, a, b, m, n)
+    --(a, 0)
+    local c = math.cos(theta)
+    local d = math.sin(theta)
+    local x = a * math.pow( math.abs( c ), 2 / m ) * radius
+    if c < 0 then
+        x = -x
+    end
+    local y = b * math.pow( math.abs( d ), 2 / n ) * radius
+    if d < 0 then
+        y = -y
+    end
+    return x,y
+end
+
+function shapes.points.super_e_curve(starting_theta, ending_theta, precision, radius, a, b, m, n)
+    ---Validate---
+    if type(starting_theta) ~= "number" then shapes.error("arg1: Expected number, got "..type(starting_theta)) end
+    if type(ending_theta) ~= "number" then shapes.error("arg2: Expected number, got "..type(ending_theta)) end
+    if type(precision) ~= "number" then shapes.error("arg3: Expected number, got "..type(precision)) end
+    if type(radius) ~= "number" then shapes.error("arg4: Expected number, got "..type(radius)) end
+    if type(a) ~= "number" then shapes.error("arg5: Expected number, got "..type(a)) end
+    if type(b) ~= "number" then shapes.error("arg6: Expected number, got "..type(b)) end
+    if type(m) ~= "number" then shapes.error("arg7: Expected number, got "..type(m)) end
+    if type(n) ~= "number" then shapes.error("arg8: Expected number, got "..type(n)) end
+    ---Create---
+    local sep = shapes.points.superellipse_polar_point
+
+    local function v2(x,z)
+        local function v(x,z)
+            return vector.new(x,0,z,0,0,0,0,0)
+        end
+        local n = vector.multiply(vector.normalize(v(x,z)),-1)
+        return vector.new(x,0,z,n.x,0,n.z,0,0)
+    end
+
+    local segment = {}
+    for theta=starting_theta, ending_theta, (ending_theta-starting_theta)/(precision-1) do
+        table.insert(segment,v2(sep(theta, radius, a, b, m, n)))
+    end
+    return segment
+end

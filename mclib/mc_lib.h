@@ -35,6 +35,8 @@ class Mesh {
         void write_face(const Face& face, std::ostream& file, bool export_normals=true) const;
         int64_t i64(const double& d) const { return static_cast<int64_t>(d); }
         double d(const int64_t& i) const { return (i)/1000.0; }
+        int64_t3 Mesh::round(const double3& in) const;
+        int64_t2 Mesh::round(const double2& in) const;
 
         std::vector<int64_t3> verticies;
         std::unordered_map<int64_t3, uint64_t> vertex_map; //each double is represented as an int, with 1 == 0.001 (3 decimal precision)

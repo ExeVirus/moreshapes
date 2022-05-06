@@ -4,9 +4,8 @@ local vector = shapes.vector
 local validate = shapes.validate
 local copy = shapes.util.deepcopy
 
-shapes.error = function(string)
-    print(debug.traceback())
-    error(string)
+math.hypot = function(x,y)
+    return math.sqrt(math.pow(x,2) + math.pow(y,2))
 end
 
 function vector.validate_vector(v)
@@ -46,15 +45,15 @@ function vector.new(x,y,z,nx,ny,nz,tx,ty)
 end
 
 function vector.equals(a, b)
-    vaidate_vector(a)
-    vaidate_vector(b)
+    validate_vector(a)
+    validate_vector(b)
     return a.x == b.x and a.y == b.y and a.z == b.z and
         a.nx == b.nx and a.ny == b.ny and a.nz == b.nz and
         a.tx == b.tx and a.ty == b.ty
 end
 
-function vector.length(a)
-    vaidate_vector(a)
+function vector.length(v)
+    validate_vector(v)
 	return math.hypot(v.x, math.hypot(v.y, v.z)), math.hypot(v.nx, math.hypot(v.ny, v.nz)), math.hypot(v.tx, v.ty)
 end
 

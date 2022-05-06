@@ -17,3 +17,8 @@ util.deepcopy = function(orig)
 end
 
 util.inspect = dofile("lua_api/lib/inspect.lua")
+
+shapes.error = function(string)
+    print(debug.traceback())
+    error("---->" .. string)
+end

@@ -46,14 +46,13 @@ bool Mesh::add_triangle(double3x3 in_verticies, double3x3 in_normal_coords, doub
 
 int64_t Mesh::vert(const double3& vertex)
 {
-    auto rounded = vertex * 1000 + 0.5; //shift decimal right three, add 0.5, then truncate to int - to round.
-    int64_t3 lookup{ i64(rounded.x), i64(rounded.y), i64(rounded.z) };
+    auto lookup = round(vertex);
     auto found_vertex = vertex_map.find(lookup);
     if (found_vertex != vertex_map.end()) {
         return found_vertex->second; //reuse
     }
     else {
-        verticies.push_back(int64_t3(i64(rounded.x), i64(rounded.y), i64(rounded.z)));
+        verticies.push_back(lookup);
         vertex_map.insert(std::make_pair(lookup, verticies.size()));
     }
     return verticies.size();
@@ -61,14 +60,13 @@ int64_t Mesh::vert(const double3& vertex)
 
 int64_t Mesh::uv(const double2& uv)
 {
-    auto rounded = uv * 1000 + 0.5; //shift decimal right three, add 0.5, then truncate to int - to round.
-    int64_t2 lookup{ i64(rounded.x), i64(rounded.y)};
+    auto lookup = round(uv);
     auto found_uv = uv_map.find(lookup);
     if (found_uv != uv_map.end()) {
         return found_uv->second; //reuse
     }
     else {
-        uv_coords.push_back(int64_t2(i64(rounded.x), i64(rounded.y)));
+        uv_coords.push_back(lookup);
         uv_map.insert(std::make_pair(lookup, uv_coords.size()));
     }
     return uv_coords.size();
@@ -76,17 +74,33 @@ int64_t Mesh::uv(const double2& uv)
 
 int64_t Mesh::norm(const double3& normal)
 {
-    auto rounded = normal * 1000 + 0.5; //shift decimal right three, add 0.5, then truncate to int - to round.
-    int64_t3 lookup{ i64(rounded.x), i64(rounded.y), i64(rounded.z) };
+    auto lookup = round(normal);
     auto found_normal = normal_map.find(lookup);
     if (found_normal != normal_map.end()) {
         return found_normal->second; //reuse
     }
     else {
-        normal_coords.push_back(int64_t3(i64(rounded.x), i64(rounded.y), i64(rounded.z)));
+        normal_coords.push_back(lookup);
         normal_map.insert(std::make_pair(lookup, normal_coords.size()));
     }
     return normal_coords.size();
+}
+
+Mesh::int64_t3 Mesh::round(const double3& in) const
+{
+    int64_t3 retVal;
+    retVal.x = i64(in.x * 1000.0 + std::copysign(0.5,in.x)); // round "up", so -0.9995 becomes -1.000
+    retVal.y = i64(in.y * 1000.0 + std::copysign(0.5,in.y));
+    retVal.z = i64(in.z * 1000.0 + std::copysign(0.5,in.z));
+    return retVal;
+}
+
+Mesh::int64_t2 Mesh::round(const double2& in) const
+{
+    int64_t2 retVal;
+    retVal.x = i64(in.x * 1000.0 + std::copysign(0.5,in.x)); // round "up", so -0.9995 becomes -1.000
+    retVal.y = i64(in.y * 1000.0 + std::copysign(0.5,in.y));
+    return retVal;
 }
 
 bool Mesh::test_export_mesh() const
