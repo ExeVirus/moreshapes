@@ -144,7 +144,29 @@ local function make_a(bottomh, toph, bottom_ty, top_ty, name)
     shapes.wall(inner, toph-bottomh, top_ty, 1)
     shapes.wall(outer, toph-bottomh, top_ty, 1)
 
+--calculate the front and back
+    local bl, tl, tr, br = 0,0,0,0
+    bl = v5(inner[#inner].x,bottomh,inner[#inner].z,0,bottom_ty)
+    br = v5(outer[1].x,bottomh,outer[1].z,1,bottom_ty)
+    tr = shapes.util.deepcopy(br); tr.y = toph; tr.ty = top_ty
+    tl = shapes.util.deepcopy(bl); tl.y = toph; tl.ty = top_ty
+
+    shapes.quad(bl,tl,tr,br,1)
+
+    bl = v5(inner[1].x,bottomh,inner[1].z,1,bottom_ty)
+    br = v5(outer[#outer].x,bottomh,outer[#outer].z,0,bottom_ty)
+    tr = shapes.util.deepcopy(br); tr.y = toph; tr.ty = top_ty
+    tl = shapes.util.deepcopy(bl); tl.y = toph; tl.ty = top_ty
+    shapes.quad(br,tr,tl,bl,1)
+
 --Calculate the top and bottoms
+    --reorder
+    local rev = {}
+    for i=#inner, 1, -1 do
+	    rev[#rev+1] = inner[i]
+    end
+    inner = rev
+
     --Top
     for i=1,#inner,1 do
         inner[i].y = toph
@@ -172,22 +194,8 @@ local function make_a(bottomh, toph, bottom_ty, top_ty, name)
         outer[i].ty = outer[i].z + 0.5
     end
 
-    --shapes.curve_segements(outer, inner, v3(0,-1,0), 1)
---calculate the front and back
-    local bl, tl, tr, br = 0,0,0,0
-    bl = v5(inner[#inner].x,bottomh,inner[#inner].z,0,bottom_ty)
-    br = v5(outer[1].x,bottomh,outer[1].z,1,bottom_ty)
-    tr = shapes.util.deepcopy(br); tr.y = toph; tr.ty = top_ty
-    tl = shapes.util.deepcopy(bl); tl.y = toph; tl.ty = top_ty
+    shapes.curve_segements(outer, inner, v3(0,-1,0), 1)
 
-    shapes.quad(bl,tl,tr,br,1)
-
-    bl = v5(inner[1].x,bottomh,inner[1].z,1,bottom_ty)
-    br = v5(outer[#outer].x,bottomh,outer[#outer].z,0,bottom_ty)
-    tr = shapes.util.deepcopy(br); tr.y = toph; tr.ty = top_ty
-    tl = shapes.util.deepcopy(bl); tl.y = toph; tl.ty = top_ty
-    shapes.quad(br,tr,tl,bl,1)
-    
     export_mesh(name)
 end
 
