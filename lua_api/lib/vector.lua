@@ -1,8 +1,10 @@
-
-shapes.vector = {}
-local vector = shapes.vector
+local vector = {}
+--Localizations
 local validate = shapes.validate
-local copy = shapes.util.deepcopy
+local copy = shapes.util.copy
+local error = shapes.util.error
+local istable = shapes.util.istable
+local isnumber = shapes.util.isnumber
 
 math.hypot = function(x,y)
     return math.sqrt(math.pow(x,2) + math.pow(y,2))
@@ -10,7 +12,7 @@ end
 
 function vector.validate_vector(v)
     --check type
-    if type(v) ~= "table" then shapes.error("vertex is not a table.") end
+    if not istable(v) then error("vertex is not a table.") end
 
     v.x = v.x or 0
     v.y = v.y or 0
@@ -24,10 +26,10 @@ function vector.validate_vector(v)
     --check all are numeric types and number of variables
     local count = 0
     for var,val in pairs(v) do
-        if type(val) ~= "number" then shapes.error(var .. " is not a number") end
+        if not isnumber(val) then error(var .. " is not a number") end
         count = count + 1
     end
-    if count ~= 8 then shapes.error("vertex table doesn't contain exactly x, y, z, nx, ny, nz, tx, and ty variables") end
+    if count ~= 8 then error("vertex table doesn't contain exactly x, y, z, nx, ny, nz, tx, and ty variables") end
     
     return true
 end
@@ -35,7 +37,7 @@ end
 local validate_vector = vector.validate_vector
 
 function vector.new(x,y,z,nx,ny,nz,tx,ty)
-    if type(x) == "table" then 
+    if istable(x) then
         local v = copy(x)
         validate_vector(v)
         return v
@@ -58,7 +60,7 @@ function vector.length(v)
 end
 
 function vector.normalize(v)
-	local len, len_n, len_t = vector.length(v) --validates for uslen
+	local len, len_n, len_t = vector.length(v) --validates for us
     local r = vector.new(v)
     r.x = (len == 0) and 0 or r.x / len
     r.y = (len == 0) and 0 or r.y / len
@@ -137,68 +139,68 @@ end
 
 function vector.add(a, b)
     local r = vector.new(a)
-	if type(b) == "table" then
+	if istable(b) then
         validate_vector(b)
         for var,val in pairs(r) do
             r[var] = val + b[var]
         end
-	elseif type(b) == "number" then
+	elseif isnumber(b) then
         for var,val in pairs(r) do
             r[var] = val + b
         end
 	else
-        shapes.error("argument 2: expected number or table, got " .. type(b))
+        error("argument 2: expected number or table, got " .. type(b))
     end
     return r
 end
 
 function vector.subtract(a, b)
     local r = vector.new(a)
-	if type(b) == "table" then
+	if istable(b) then
         validate_vector(b)
         for var,val in pairs(r) do
             r[var] = val - b[var]
         end
-	elseif type(b) == "number" then
+	elseif isnumber(b) then
         for var,val in pairs(r) do
             r[var] = val - b
         end
 	else
-        shapes.error("argument 2: expected number or table, got " .. type(b))
+        error("argument 2: expected number or table, got " .. type(b))
     end
     return r
 end
 
 function vector.multiply(a, b)
     local r = vector.new(a)
-	if type(b) == "table" then
+	if istable(b) then
         validate_vector(b)
         for var,val in pairs(r) do
             r[var] = val * b[var]
         end
-	elseif type(b) == "number" then
+	elseif isnumber(b) then
         for var,val in pairs(r) do
             r[var] = val * b
         end
 	else
-        shapes.error("argument 2: expected number or table, got " .. type(b))
+        error("argument 2: expected number or table, got " .. type(b))
     end
     return r
 end
 
 function vector.divide(a, b)
     local r = vector.new(a)
-	if type(b) == "table" then
+	if istable(b) then
         validate_vector(b)
         for var,val in airs(r) do
             r[var] = val / b[var]
         end
-	elseif type(b) == "number" then
+	elseif isnumber(b) then
         for var,val in pairs(r) do
             r[var] = val / b
         end
 	else
-        shapes.error("argument 2: expected number or table, got " .. type(b))
+        error("argument 2: expected number or table, got " .. type(b))
     end
     return r
 end
@@ -227,6 +229,7 @@ local function cos(x)
 end
 
 function vector.rotate_around_axis(v, axis, angle)
+    validate_vector(v)
 	local cosangle = cos(angle)
 	local sinangle = sin(angle)
 	axis = vector.normalize(axis)
@@ -282,3 +285,5 @@ function vector.rotate(v, rot)
         v.ty
 	)
 end
+
+return vector

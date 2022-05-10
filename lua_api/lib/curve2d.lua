@@ -1,18 +1,22 @@
 -- Common Shape Functions
+local curve2d = {}
 
 local vector = shapes.vector
+local validate_vector = vector.validate_vector
+local error = shapes.error
+local istable = shapes.util.istable
+local isnumber = shapes.util.isnumber
 
 --Single normal used for all pieces
-function shapes.corner_curve_c_clockwise(corner, segments, normal, group)
+function curve2d.corner_curve_c_clockwise(corner, segments, normal, group)
     ---Validation---
-    if type(segments) ~= "table" then shapes.error("Segements is not a table") end
-    if #segments < 2 then shapes.error("Segements has fewer than 2 points") end
-    local validate_vector = vector.validate_vector
+    if not istable(segments) then error("Segements is not a table") end
+    if #segments < 2 then error("Segements has fewer than 2 points") end
     for i=1,#segments,1 do
         validate_vector(segments[i])
     end
     validate_vector(corner)
-    if type(group) ~= "number" then shapes.error("4th arg: expected number, got "..type(group)) end
+    if not isnumber(group) then error("4th arg: expected number, got "..type(group)) end
     ---Creation---
     for i=1,#segments-1,1 do
         local first = segments[i]
@@ -33,16 +37,15 @@ function shapes.corner_curve_c_clockwise(corner, segments, normal, group)
 end
 
 --Single normal used for all pieces
-function shapes.corner_curve_clockwise(corner, segments, normal, group)
+function curve2d.corner_curve_clockwise(corner, segments, normal, group)
     ---Validation---
-    if type(segments) ~= "table" then shapes.error("Segements is not a table") end
-    if #segments < 2 then shapes.error("Segements has fewer than 2 points") end
-    local validate_vector = vector.validate_vector
+    if not istable(segments) then error("Segements is not a table") end
+    if #segments < 2 then error("Segements has fewer than 2 points") end
     for i=1,#segments,1 do
         validate_vector(segments[i])
     end
     validate_vector(corner)
-    if type(group) ~= "number" then shapes.error("4th arg: expected number, got "..type(group)) end
+    if not isnumber(group) then error("4th arg: expected number, got "..type(group)) end
     ---Creation---
     for i=1,#segments-1,1 do
         local first = segments[i]
@@ -63,29 +66,27 @@ function shapes.corner_curve_clockwise(corner, segments, normal, group)
 end
 
 --These segements shouldn't cross... and start at the front and work their way backwards (z to -z)
-function shapes.curve_segements(left_segment, right_segment, normal, group)
+function curve2d.curve_segements(left_segment, right_segment, normal, group)
     ---Validation---
-    local validate_vector = vector.validate_vector
     local function validate_segments(seg)
-        if type(seg) ~= "table" then shapes.error("Segment is not a table") end
-        if #seg < 2 then shapes.error("Segment has fewer than 2 points") end
+        if not istable(seg) then error("Segment is not a table") end
+        if #seg < 2 then error("Segment has fewer than 2 points") end
         for i=1,#seg,1 do
             validate_vector(seg[i])
         end
     end
     validate_segments(left_segment)
     validate_segments(right_segment)
-    if #left_segment ~= #right_segment then shapes.error("Segments must have equal numbers of points") end
+    if #left_segment ~= #right_segment then error("Segments must have equal numbers of points") end
     validate_vector(normal)
-    if type(group) ~= "number" then shapes.error("4th arg: expected number, got "..type(group)) end
+    if not isnumber(group) then error("4th arg: expected number, got "..type(group)) end
     ---Creation---
-    local tri = shapes.tri
+    local tri = shapes.common.tri
     for i=1,#left_segment-1,1 do
-        local bl = shapes.util.deepcopy(left_segment[i])
-        local tl = shapes.util.deepcopy(left_segment[i+1])
-        local tr = shapes.util.deepcopy(right_segment[i+1])
-        local br = shapes.util.deepcopy(right_segment[i])
-        print(i,bl.x,bl.y,bl.z)
+        local bl = vector.new(left_segment[i])
+        local tl = vector.new(left_segment[i+1])
+        local tr = vector.new(right_segment[i+1])
+        local br = vector.new(right_segment[i])
         tri(bl,tl,tr,group)
         tri(bl,tr,br,group)
     end
@@ -93,29 +94,30 @@ function shapes.curve_segements(left_segment, right_segment, normal, group)
     
 end
 
-function shapes.wall(segments, height, texHeight, group)
+function curve2d.wall(segments, height, texHeight, group)
     ---Validation---
-    if type(segments) ~= "table" then shapes.error("Segements is not a table") end
-    if #segments < 2 then shapes.error("Segements has fewer than 2 points") end
-    local validate_vector = vector.validate_vector
+    if not istable(segments) then error("Segements is not a table") end
+    if #segments < 2 then error("Segements has fewer than 2 points") end
     for i=1,#segments,1 do
         validate_vector(segments[i])
     end
-    if type(height) ~= "number" then shapes.error("2nd arg: expected number, got "..type(height)) end
-    if type(texHeight) ~= "number" then shapes.error("2nd arg: expected number, got "..type(texHeight)) end
-    if type(group) ~= "number" then shapes.error("3rd arg: expected number, got "..type(group)) end
+    if not isnumber(height) then error("2nd arg: expected number, got "..type(height)) end
+    if not isnumber(texHeight) then error("2nd arg: expected number, got "..type(texHeight)) end
+    if not isnumber(group) then error("3rd arg: expected number, got "..type(group)) end
     ---Creation---
-    local quad = shapes.quad
+    local quad = shapes.common.quad
     local function top(v, h, th)
         return vector.new(v.x,v.y+h,v.z,v.nx,v.ny,v.nz,v.tx,v.ty+th)
     end
 
     for i=1,#segments-1,1 do
-        local bl = shapes.util.deepcopy(segments[i])
-        local br = shapes.util.deepcopy(segments[i+1])
+        local bl = vector.new(segments[i])
+        local br = vector.new(segments[i+1])
         local tl = top(bl, height, texHeight)
         local tr = top(br, height, texHeight)
         
         quad(bl,tl,tr,br,group)
     end
 end
+
+return curve2d

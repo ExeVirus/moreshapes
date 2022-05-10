@@ -1,24 +1,33 @@
-shapes.util = {}
-local util = shapes.util
+local util = {}
 
-util.deepcopy = function(orig)
+function util.copy(orig)
     local orig_type = type(orig)
-    local copy
+    local copyit
     if orig_type == 'table' then
-        copy = {}
+        copyit = {}
         for orig_key, orig_value in next, orig, nil do
-            copy[util.deepcopy(orig_key)] = util.deepcopy(orig_value)
+            copyit[util.copy(orig_key)] = util.copy(orig_value)
         end
-        setmetatable(copy, util.deepcopy(getmetatable(orig)))
+        setmetatable(copyit, util.copy(getmetatable(orig)))
     else -- number, string, boolean, etc
-        copy = orig
+        copyit = orig
     end
-    return copy
+    return copyit
 end
 
 util.inspect = dofile("lua_api/lib/inspect.lua")
 
-shapes.error = function(string)
+function util.error(string)
     print(debug.traceback())
     error("---->" .. string)
 end
+
+function util.istable(v)
+    return type(v) == "table"
+end
+
+function util.isnumber(v)
+    return type(v) == "number"
+end
+
+return util

@@ -1,20 +1,26 @@
 -- Common Shape Functions
 
-local vector = shapes.vector
+local common = {}
 
-shapes.quad = function(bl,tl,tr,br,group)
-    vector.validate_vector(bl)
-    vector.validate_vector(tl)
-    vector.validate_vector(tr)
-    vector.validate_vector(br)
+local vector = shapes.vector
+local validate_vector = vector.validate_vector
+local error = shapes.util.error
+local istable = shapes.util.istable
+local isnumber = shapes.util.isnumber
+
+function common.quad(bl,tl,tr,br,group)
+    validate_vector(bl)
+    validate_vector(tl)
+    validate_vector(tr)
+    validate_vector(br)
     -- verify_all_one_one_plane
     local p1 = vector.subtract(tl,bl)
     local p2 = vector.subtract(tr,bl)
     local p3 = vector.subtract(br,bl)
     if vector.determinant(p1,p2,p3) > 0.001 then
-        shapes.error("Points provided are not co-planar")
+        error("Points provided are not co-planar")
     end
-    if type(group) ~= "number" then shapes.error("5th arg: expected number, got "..type(group)) end
+    if not isnumber(group) then error("5th arg: expected number, got "..type(group)) end
 
     local n = vector.cross(vector.subtract(bl,tl),vector.subtract(bl,tr))
 
@@ -45,11 +51,11 @@ shapes.quad = function(bl,tl,tr,br,group)
     )
 end
 
-shapes.tri = function(bl,tl,tr,group)
-    if type(group) ~= "number" then shapes.error("4th arg: expected number, got "..type(group)) end
-    vector.validate_vector(bl)
-    vector.validate_vector(tl)
-    vector.validate_vector(tr)
+function common.tri(bl,tl,tr,group)
+    if not isnumber(group) then error("4th arg: expected number, got "..type(group)) end
+    validate_vector(bl)
+    validate_vector(tl)
+    validate_vector(tr)
     local n = vector.cross(vector.subtract(bl,tl),vector.subtract(bl,tr))
     add_triangle(
         tl.x, tl.y, tl.z,
@@ -65,25 +71,25 @@ shapes.tri = function(bl,tl,tr,group)
     )
 end
 
-shapes.rect = function(bl, tl, tr, group)
-    vector.validate_vector(bl)
-    vector.validate_vector(tl)
-    vector.validate_vector(tr)
+function common.rect(bl, tl, tr, group)
+    validate_vector(bl)
+    validate_vector(tl)
+    validate_vector(tr)
     local br = vector.add(vector.subtract(bl,tl),tr)
 
-    shapes.quad(bl,tl,tr,br,group)
+    common.quad(bl,tl,tr,br,group)
 end
 
-shapes.axis_aligned_rectangular_prism = function(middle, dimensions, tesselated, g1, g2, g3, g4, g5, g6)
-    vector.validate_vector(middle)
-    vector.validate_vector(dimensions)
+function common.axis_aligned_rectangular_prism(middle, dimensions, tesselated, g1, g2, g3, g4, g5, g6)
+    validate_vector(middle)
+    validate_vector(dimensions)
     tesselated = tesselated or false
-    if type(g1) ~= "number" then g1=1 end
-    if type(g2) ~= "number" then g2=2 end
-    if type(g3) ~= "number" then g3=3 end
-    if type(g4) ~= "number" then g4=4 end
-    if type(g5) ~= "number" then g5=5 end
-    if type(g6) ~= "number" then g6=6 end
+    if not isnumber(g1) then g1=1 end
+    if not isnumber(g2) then g2=2 end
+    if not isnumber(g3) then g3=3 end
+    if not isnumber(g4) then g4=4 end
+    if not isnumber(g5) then g5=5 end
+    if not isnumber(g6) then g6=6 end
 
 --      .+-top--+
 --    .' |    .'|
@@ -123,7 +129,7 @@ shapes.axis_aligned_rectangular_prism = function(middle, dimensions, tesselated,
     end
 
     -- now output the rectangles
-    local r = shapes.rect
+    local r = common.rect
     r(t(tlf,tlb,trb,g1,d.x,d.z))  --top
     r(t(blb,blf,brf,g2,d.x,d.z))  --bottom
     r(t(blf,tlf,trf,g3,d.x,d.y))  --front
@@ -131,3 +137,5 @@ shapes.axis_aligned_rectangular_prism = function(middle, dimensions, tesselated,
     r(t(brf,trf,trb,g5,d.z,d.y))  --right
     r(t(blb,tlb,tlf,g6,d.z,d.y))  --left
 end
+
+return common

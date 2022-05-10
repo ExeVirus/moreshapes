@@ -4,22 +4,22 @@
 shapes = {}
 
 -- utility functions
-dofile("lua_api/lib/util.lua")
+shapes.util = dofile("lua_api/lib/util.lua")
 
 -- vector math lib
-dofile("lua_api/lib/vector.lua")
+shapes.vector = dofile("lua_api/lib/vector.lua")
 
 -- Cube, quad, etc
-dofile("lua_api/lib/common_shape_functions.lua")
+shapes.common = dofile("lua_api/lib/common.lua")
 
 -- superellipse stuff
-dofile("lua_api/lib/2d_point_generation_functions.lua")
+shapes.points = dofile("lua_api/lib/points.lua")
 
 -- offset, rotation, mirror, length etc.
-dofile("lua_api/lib/2d_point_functions.lua")
+shapes.p_manip = dofile("lua_api/lib/p_manip.lua")
 
 -- 1curve, 2curve, etc.
-dofile("lua_api/lib/2d_curve_functions.lua")
+shapes.curve2d = dofile("lua_api/lib/curve2d.lua")
 
--- tbd
--- dofile("lib/3d_curve_functions.lua")
+-- what our shapes are made of 
+shapes.curve3d = dofile("lua_api/lib/curve3d.lua")
