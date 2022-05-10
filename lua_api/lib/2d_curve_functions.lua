@@ -79,17 +79,15 @@ function shapes.curve_segements(left_segment, right_segment, normal, group)
     validate_vector(normal)
     if type(group) ~= "number" then shapes.error("4th arg: expected number, got "..type(group)) end
     ---Creation---
-    local function n(v)
-        return vector.new(v.x,v.y,v.z,normal.x,normal.y,normal.z,v.tx,v.ty)
-    end
-    local quad = shapes.quad
+    local tri = shapes.tri
     for i=1,#left_segment-1,1 do
-        local bl = n(left_segment[i])
-        local tl = n(left_segment[i+1])
-        local tr = n(right_segment[i+1])
-        local br = n(right_segment[i])
-
-        quad(bl,tl,tr,br,group)
+        local bl = shapes.util.deepcopy(left_segment[i])
+        local tl = shapes.util.deepcopy(left_segment[i+1])
+        local tr = shapes.util.deepcopy(right_segment[i+1])
+        local br = shapes.util.deepcopy(right_segment[i])
+        print(i,bl.x,bl.y,bl.z)
+        tri(bl,tl,tr,group)
+        tri(bl,tr,br,group)
     end
 
     
@@ -113,8 +111,8 @@ function shapes.wall(segments, height, texHeight, group)
     end
 
     for i=1,#segments-1,1 do
-        local bl = segments[i]
-        local br = segments[i+1]
+        local bl = shapes.util.deepcopy(segments[i])
+        local br = shapes.util.deepcopy(segments[i+1])
         local tl = top(bl, height, texHeight)
         local tr = top(br, height, texHeight)
         

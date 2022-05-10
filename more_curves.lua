@@ -108,13 +108,14 @@ reset_mesh()
 --------------------------Mesh "a"------------------------------
 ----------------------------------------------------------------
 
-local function make_a(height, name)
+local function make_a(bottomh, toph, bottom_ty, top_ty, name)
     reset_mesh()
 --Calculate the curve outsides
     local outer = shapes.points.super_e_curve(math.pi*0/4, math.pi*1/4, 5, 1.5, 1, 1, 1.71, 1.71)
     --generate mirror copies of the core curve on the right spot around origin
     for i=1,#outer, 1 do
-        outer[i] = shapes.vector.add(shapes.vector.multiply(outer[i], shapes.vector.new(1,1,-1,1,1,1,0,0)), v3(-1.5,0,0))
+        outer[i] = shapes.vector.add(shapes.vector.multiply(outer[i], shapes.vector.new(1,1,-1,1,1,1,0,0)), v3(-1.5,-0.5,0))
+        outer[i].ty = bottom_ty
     end
     local inner = {}
     for i=1,#outer, 1 do
@@ -128,7 +129,8 @@ local function make_a(height, name)
     local tx = 0
     outer[1].tx = 0
     for i=2,#outer, 1 do
-        outer[i].tx = shapes.vector.distance(outer[i],outer[i-1])
+        tx = tx + shapes.vector.distance(outer[i],outer[i-1])
+        outer[i].tx = tx
     end
     for i=1,#inner, 1 do
         inner[i] = shapes.vector.add(inner[i], shapes.vector.multiply(v3(inner[i].nx,0,-inner[i].nz), 0.5))
@@ -136,21 +138,22 @@ local function make_a(height, name)
     tx = 0
     inner[1].tx = 0
     for i=2,#inner, 1 do
-        inner[i].tx = shapes.vector.distance(inner[i],inner[i-1])
+        tx = tx + shapes.vector.distance(inner[i],inner[i-1])
+        inner[i].tx = tx
     end
-    shapes.wall(inner, height, height, 1)
-    shapes.wall(outer, height, height, 1)
+    shapes.wall(inner, toph-bottomh, top_ty, 1)
+    shapes.wall(outer, toph-bottomh, top_ty, 1)
 
 --Calculate the top and bottoms
     --Top
     for i=1,#inner,1 do
-        inner[i].y = height
-        inner[i].tx = inner[i].x + 0.5 
+        inner[i].y = toph
+        inner[i].tx = inner[i].x + 0.5
         inner[i].ty = inner[i].z + 0.5
     end
 
     for i=1,#outer,1 do
-        outer[i].y = height
+        outer[i].y = toph
         outer[i].tx = outer[i].x + 0.5 
         outer[i].ty = outer[i].z + 0.5
     end
@@ -158,29 +161,36 @@ local function make_a(height, name)
 
     --Bottom
     for i=1,#inner,1 do
-        inner[i].y = 0
+        inner[i].y = bottomh
         inner[i].tx = inner[i].x + 0.5 
         inner[i].ty = inner[i].z + 0.5
     end
 
     for i=1,#outer,1 do
-        outer[i].y = 0
+        outer[i].y = bottomh
         outer[i].tx = outer[i].x + 0.5 
         outer[i].ty = outer[i].z + 0.5
     end
 
-    shapes.curve_segements(outer, inner, v3(0,-1,0), 1)
+    --shapes.curve_segements(outer, inner, v3(0,-1,0), 1)
 --calculate the front and back
     local bl, tl, tr, br = 0,0,0,0
-    bl = v5(inner[1].x,0,inner[1].z,0,0)
-    br = v5(outer[1].x,0,outer[1].z,1,0)
-    tr = shapes.util.deepcopy(br); tr.y = 1; tr.ty = 1
-    tl = shapes.util.deepcopy(bl); tl.y = 1; tl.ty = 1
+    bl = v5(inner[#inner].x,bottomh,inner[#inner].z,0,bottom_ty)
+    br = v5(outer[1].x,bottomh,outer[1].z,1,bottom_ty)
+    tr = shapes.util.deepcopy(br); tr.y = toph; tr.ty = top_ty
+    tl = shapes.util.deepcopy(bl); tl.y = toph; tl.ty = top_ty
 
     shapes.quad(bl,tl,tr,br,1)
-    shapes.quad(bl,tl,tr,br,1)    
+
+    bl = v5(inner[1].x,bottomh,inner[1].z,1,bottom_ty)
+    br = v5(outer[#outer].x,bottomh,outer[#outer].z,0,bottom_ty)
+    tr = shapes.util.deepcopy(br); tr.y = toph; tr.ty = top_ty
+    tl = shapes.util.deepcopy(bl); tl.y = toph; tl.ty = top_ty
+    shapes.quad(br,tr,tl,bl,1)
     
     export_mesh(name)
 end
+
+make_a(-0.5, 0.5, 0, 1,"a.obj")
 
 

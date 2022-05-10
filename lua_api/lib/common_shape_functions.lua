@@ -45,6 +45,26 @@ shapes.quad = function(bl,tl,tr,br,group)
     )
 end
 
+shapes.tri = function(bl,tl,tr,group)
+    if type(group) ~= "number" then shapes.error("4th arg: expected number, got "..type(group)) end
+    vector.validate_vector(bl)
+    vector.validate_vector(tl)
+    vector.validate_vector(tr)
+    local n = vector.cross(vector.subtract(bl,tl),vector.subtract(bl,tr))
+    add_triangle(
+        tl.x, tl.y, tl.z,
+        bl.x, bl.y, bl.z,
+        tr.x, tr.y, tr.z,
+        n.x, n.y, n.z,
+        n.x, n.y, n.z,
+        n.x, n.y, n.z,
+        tl.tx, tl.ty,
+        bl.tx, bl.ty,
+        tr.tx, tr.ty,
+        group
+    )
+end
+
 shapes.rect = function(bl, tl, tr, group)
     vector.validate_vector(bl)
     vector.validate_vector(tl)
