@@ -79,7 +79,6 @@ shapes.curve3d.curve2_closed(rev_inner, rev_outer, -0.50, 0.25, 0.25, 0.75,"mode
 local curve = points.super_e_curve(math.pi*0/4, math.pi*2/4, 5, 1, 1, 1, 1.71, 1.71)
 curve = p_manip.multiply(curve, v(1,1,-1,1,1,1,1,1))
 curve = p_manip.add(curve, v3(-0.5,-0.5,0.5))
-p_manip.dump(curve)
 
 shapes.curve3d.point_curve(v3(-0.5,-0.5,0.5), curve, -0.50,-0.25, 0.00, 0.25, "models/b_1.obj")
 shapes.curve3d.point_curve(v3(-0.5,-0.5,0.5), curve, -0.50, 0.00, 0.00, 0.50, "models/b_2.obj")
