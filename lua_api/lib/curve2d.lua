@@ -3,7 +3,7 @@ local curve2d = {}
 
 local vector = shapes.vector
 local validate_vector = vector.validate_vector
-local error = shapes.error
+local error = shapes.util.error
 local istable = shapes.util.istable
 local isnumber = shapes.util.isnumber
 

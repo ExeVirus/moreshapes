@@ -11,14 +11,14 @@ local validstring = shapes.util.validstring
 local validate_segment = shapes.points.validate_segment
 
 function curve3d.curve2_closed(left_in, right_in, bottomh, toph, bottom_ty, top_ty, name)
-    reset_mesh()
     validate_segment(left_in)
     validate_segment(right_in)
     validnumber(bottomh)
     validnumber(toph)
     validnumber(bottom_ty)
     validnumber(top_ty)
-    validstring(name)
+    validstring(name, "name")
+    if name ~= "no_export" then reset_mesh() end
     local left = shapes.util.copy(left_in)
     local right = shapes.util.copy(right_in)
 
@@ -80,37 +80,24 @@ function curve3d.curve2_closed(left_in, right_in, bottomh, toph, bottom_ty, top_
 
     shapes.curve2d.curve_segements(right, left, vector.new(0,-1,0,0,0,0,0,0), 2)
 
-    export_mesh(name)
+    if name ~= "no_export" then export_mesh(name) end
 end
 
-function curve3d.point_curve(left_point_in, right_in, bottomh, toph, bottom_ty, top_ty, name)
-    reset_mesh()
-    validate_vector(left_point_in)
-    validate_segment(right_in)
-    validnumber(bottomh)
-    validnumber(toph)
-    validnumber(bottom_ty)
-    validnumber(top_ty)
-    validstring(name)
+function curve3d.point_curve_open(left_point_in, right_in, bottomh, toph, bottom_ty, top_ty, curve_group, name)
+    validate_vector(left_point_in, "left_point_in")
+    validate_segment(right_in, "right_in")
+    validnumber(bottomh, "bottomh")
+    validnumber(toph, "toph")
+    validnumber(bottom_ty, "bottom_ty")
+    validnumber(top_ty, "top_ty")
+    validnumber(curve_group, "curve_group")
+    validstring(name, "name")
+    if name ~= "no_export" then reset_mesh() end
     local left = shapes.util.copy(left_point_in)
     local right = shapes.util.copy(right_in)
 
     --Outer Curve
-    shapes.curve2d.wall(right, toph-bottomh, top_ty, 4)
-
-    --Front and Back
-    local bl, tl, tr, br = 0,0,0,0
-    bl = vector.new(left.x,bottomh,left.z,0,0,0,0,bottom_ty)
-    br = vector.new(right[1].x,bottomh,right[1].z,0,0,0,1,bottom_ty)
-    tr = vector.new(br); tr.y = toph; tr.ty = top_ty
-    tl = vector.new(bl); tl.y = toph; tl.ty = top_ty
-    shapes.common.quad(bl,tl,tr,br,5)
-
-    bl = vector.new(right[#right].x,bottomh,right[#right].z,0,0,0,0,bottom_ty)
-    br = vector.new(left.x,bottomh,left.z,0,0,0,1,bottom_ty)
-    tr = shapes.vector.new(br); tr.y = toph; tr.ty = top_ty
-    tl = shapes.vector.new(bl); tl.y = toph; tl.ty = top_ty
-    shapes.common.quad(bl,tl,tr,br,6)
+    shapes.curve2d.wall(right, toph-bottomh, top_ty, curve_group)
 
     --Top
     local tx_offset = left.x
@@ -138,7 +125,30 @@ function curve3d.point_curve(left_point_in, right_in, bottomh, toph, bottom_ty, 
 
     shapes.curve2d.corner_curve_clockwise(left, right, vector.new(0,-1,0,0,0,0,0,0), 2)
 
-    export_mesh(name)
+    if name ~= "no_export" then export_mesh(name) end
+end
+
+function curve3d.point_curve_closed(left_point_in, right_in, bottomh, toph, bottom_ty, top_ty, curve_group, name)
+    if name ~= "no_export" then reset_mesh() end
+    curve3d.point_curve_open(left_point_in, right_in, bottomh, toph, bottom_ty, top_ty, curve_group, "no_export")
+    local left = shapes.util.copy(left_point_in)
+    local right = shapes.util.copy(right_in)
+
+    --Front and Back
+    local bl, tl, tr, br = 0,0,0,0
+    bl = vector.new(left.x,bottomh,left.z,0,0,0,0,bottom_ty)
+    br = vector.new(right[1].x,bottomh,right[1].z,0,0,0,1,bottom_ty)
+    tr = vector.new(br); tr.y = toph; tr.ty = top_ty
+    tl = vector.new(bl); tl.y = toph; tl.ty = top_ty
+    shapes.common.quad(bl,tl,tr,br,5)
+
+    bl = vector.new(right[#right].x,bottomh,right[#right].z,0,0,0,0,bottom_ty)
+    br = vector.new(left.x,bottomh,left.z,0,0,0,1,bottom_ty)
+    tr = shapes.vector.new(br); tr.y = toph; tr.ty = top_ty
+    tl = shapes.vector.new(bl); tl.y = toph; tl.ty = top_ty
+    shapes.common.quad(bl,tl,tr,br,6)
+
+    if name ~= "no_export" then export_mesh(name) end
 end
 
 return curve3d
