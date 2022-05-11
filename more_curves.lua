@@ -218,6 +218,7 @@ end
 for i=1,#outer, 1 do
     outer[i] = shapes.vector.multiply(outer[i], shapes.vector.new(1,1,1,-1,-1,-1,1,1))
     outer[i] = shapes.vector.add(outer[i], shapes.vector.multiply(v3(outer[i].nx,0,-outer[i].nz), 0.5))
+    outer[i].z = outer[i].z + 0.5
 end
 local tx = 0
 outer[1].tx = 0
@@ -227,6 +228,7 @@ for i=2,#outer, 1 do
 end
 for i=1,#inner, 1 do
     inner[i] = shapes.vector.add(inner[i], shapes.vector.multiply(v3(inner[i].nx,0,-inner[i].nz), 0.5))
+    inner[i].z = inner[i].z + 0.5
 end
 tx = 0
 inner[1].tx = 0
@@ -238,8 +240,7 @@ end
 shapes.curve3d.curve2(inner, outer, -0.5, 0.5, 0,   1,   "a_4.obj")
 shapes.curve3d.curve2(inner, outer, -0.5,-0.25,0,   0.25,"a_1.obj")
 shapes.curve3d.curve2(inner, outer, -0.5,   0, 0,   0.5, "a_2.obj")
-shapes.curve3d.curve2(inner, outer, -0.5,   0, 0.25,0.75,"a_3.obj")
-
+shapes.curve3d.curve2(inner, outer, -0.5, 0.25,0.25,0.75,"a_3.obj")
 
 --make_a(-0.5, 0.5, 0, 1,"a.obj")
 

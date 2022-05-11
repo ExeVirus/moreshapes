@@ -7,8 +7,10 @@ local error = shapes.error
 local istable = shapes.util.istable
 local isnumber = shapes.util.isnumber
 
-function curve3d.curve2(left, right, bottomh, toph, bottom_ty, top_ty, name)
+function curve3d.curve2(left_in, right_in, bottomh, toph, bottom_ty, top_ty, name)
     reset_mesh()
+    local left = shapes.util.copy(left_in)
+    local right = shapes.util.copy(right_in)
 
     shapes.curve2d.wall(left, toph-bottomh, top_ty, 3)
     shapes.curve2d.wall(right, toph-bottomh, top_ty, 4)
