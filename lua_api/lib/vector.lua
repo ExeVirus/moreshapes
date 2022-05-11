@@ -46,6 +46,12 @@ function vector.new(x,y,z,nx,ny,nz,tx,ty)
     end
 end
 
+function vector.dump(v)
+    local r = function(val) return string.format("%.3f",shapes.util.round(val,3)) end
+    validate_vector(v)
+    print("("..r(v.x)..","..r(v.y)..","..r(v.z)..") ".."("..r(v.nx)..","..r(v.ny)..","..r(v.nz)..") ".."("..r(v.tx)..","..r(v.ty)..")")
+end
+
 function vector.equals(a, b)
     validate_vector(a)
     validate_vector(b)

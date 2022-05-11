@@ -2,7 +2,7 @@ local points = {}
 
 local vector = shapes.vector
 local validate_vector = vector.validate_vector
-local error = shapes.error
+local error = shapes.util.error
 local istable = shapes.util.istable
 local isnumber = shapes.util.isnumber
 
@@ -47,6 +47,14 @@ function points.super_e_curve(starting_theta, ending_theta, precision, radius, a
         table.insert(segment,v2(sep(theta, radius, a, b, m, n)))
     end
     return segment
+end
+
+function points.validate_segment(segment)
+    if not istable(segment) then error("Segment is not a table") end
+    if #segment < 2 then error("Segment has less than 2 vectors") end
+    for i=1, #segment do
+        validate_vector(segment[i])
+    end
 end
 
 return points
