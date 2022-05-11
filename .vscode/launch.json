@@ -5,14 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug",
-            "type": "gdb",
+            "name": "(Windows) Launch",
+            "type": "cppvsdbg",
             "request": "launch",
-            "target": "./build/morecurves.exe",
-            "cwd": "${workspaceRoot}",
-            "valuesFormatting": "parseText",
-            "arguments": "more_curves.lua",
-            "terminal": ""
+            "program": "${workspaceFolder}/build/Debug/morecurves.exe",
+            "args": ["more_curves.lua"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "externalTerminal"
         }
     ]
 }
