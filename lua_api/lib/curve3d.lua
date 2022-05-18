@@ -113,14 +113,10 @@ function curve3d.point_curve_open(left_point_in, right_in, bottomh, toph, bottom
     shapes.curve2d.corner_curve_c_clockwise(left, right, vector.new(0,1,0,0,0,0,0,0), 1)
 
     --Bottom
-    local tx_offset = right[1].x
-    local ty_offset = right[1].z
     left.y = bottomh
 
     for i=1,#right,1 do
         right[i].y = bottomh
-        right[i].tx = right[i].x - tx_offset
-        right[i].ty = right[i].z - ty_offset
     end
 
     shapes.curve2d.corner_curve_clockwise(left, right, vector.new(0,-1,0,0,0,0,0,0), 2)
