@@ -16,32 +16,32 @@ class Mesh {
         bool test_export_mesh() const;
 
     protected:
-        typedef linalg::vec<uint64_t, 3> uint64_t3;
-        typedef linalg::vec<uint64_t, 2> uint64_t2;
+        typedef linalg::vec<int64_t, 3> int64_t3;
+        typedef linalg::vec<int64_t, 2> int64_t2;
 
         struct Face {
-            Face(uint64_t v1, uint64_t v2, uint64_t v3, uint64_t vt1, uint64_t vt2, uint64_t vt3, uint64_t vn1, uint64_t vn2,  uint64_t vn3) : v{ v1, v2, v3 }, vt{ vt1, vt2 , vt3 }, vn{ vn1, vn2, vn3 } {}
-            linalg::vec<uint64_t, 3> v;
-            linalg::vec<uint64_t, 3> vt;
-            linalg::vec<uint64_t, 3> vn;
+            Face(int64_t v1, int64_t v2, int64_t v3, int64_t vt1, int64_t vt2, int64_t vt3, int64_t vn1, int64_t vn2,  int64_t vn3) : v{ v1, v2, v3 }, vt{ vt1, vt2 , vt3 }, vn{ vn1, vn2, vn3 } {}
+            linalg::vec<int64_t, 3> v;
+            linalg::vec<int64_t, 3> vt;
+            linalg::vec<int64_t, 3> vn;
         };
         void error(const std::string& error) const;
-        uint64_t vert(const double3& vertex);
-        uint64_t uv(const double2& uv);
-        uint64_t norm(const double3& normal);
-        void write_vertex(const uint64_t3& vertex, std::ostream& file) const;
-        void write_uv(const uint64_t2& uv, std::ostream& file) const;
-        void write_normal(const uint64_t3& normal, std::ostream& file) const;
+        int64_t vert(const double3& vertex);
+        int64_t uv(const double2& uv);
+        int64_t norm(const double3& normal);
+        void write_vertex(const int64_t3& vertex, std::ostream& file) const;
+        void write_uv(const int64_t2& uv, std::ostream& file) const;
+        void write_normal(const int64_t3& normal, std::ostream& file) const;
         void write_face(const Face& face, std::ostream& file, bool export_normals=true) const;
-        uint64_t u64(const double& d) const { return static_cast<uint64_t>(d); }
-        double d(const uint64_t& i) const { return (i)/1000.0; }
+        int64_t i64(const double& d) const { return static_cast<int64_t>(d); }
+        double d(const int64_t& i) const { return (i)/1000.0; }
 
-        std::vector<uint64_t3> verticies;
-        std::unordered_map<uint64_t3, uint64_t> vertex_map; //each double is represented as an int, with 1 == 0.001 (3 decimal precision)
-        std::vector<uint64_t2> uv_coords;
-        std::unordered_map<uint64_t2, uint64_t> uv_map; //each double is represented as an int, with 1 == 0.001 (3 decimal precision)
-        std::vector<uint64_t3> normal_coords;
-        std::unordered_map<uint64_t3, uint64_t> normal_map; //each double is represented as an int, with 1 == 0.001 (3 decimal precision)
+        std::vector<int64_t3> verticies;
+        std::unordered_map<int64_t3, int64_t> vertex_map; //each double is represented as an int, with 1 == 0.001 (3 decimal precision)
+        std::vector<int64_t2> uv_coords;
+        std::unordered_map<int64_t2, int64_t> uv_map; //each double is represented as an int, with 1 == 0.001 (3 decimal precision)
+        std::vector<int64_t3> normal_coords;
+        std::unordered_map<int64_t3, int64_t> normal_map; //each double is represented as an int, with 1 == 0.001 (3 decimal precision)
         std::vector<std::vector<Face>> faces; //first index is group number
 };
 

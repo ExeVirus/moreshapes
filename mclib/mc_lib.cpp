@@ -44,46 +44,56 @@ bool Mesh::add_triangle(double3x3 in_verticies, double3x3 in_normal_coords, doub
     return true;
 }
 
-uint64_t Mesh::vert(const double3& vertex)
+int64_t Mesh::vert(const double3& vertex)
 {
-    auto rounded = vertex * 1000 + 0.5; //shift decimal right three, add 0.5, then truncate to int - to round.
-    uint64_t3 lookup{ u64(rounded.x), u64(rounded.y), u64(rounded.z) };
+    //shift decimal right three, add 0.5, then truncate to int - to round.
+    int64_t3 lookup{ 
+        i64(vertex.x < 0 ? (vertex.x * 1000.0d - 0.5) : (vertex.x * 1000.0d + 0.5)), 
+        i64(vertex.y < 0 ? (vertex.y * 1000.0d - 0.5) : (vertex.y * 1000.0d + 0.5)), 
+        i64(vertex.z < 0 ? (vertex.z * 1000.0d - 0.5) : (vertex.z * 1000.0d + 0.5))
+    };
     auto found_vertex = vertex_map.find(lookup);
     if (found_vertex != vertex_map.end()) {
         return found_vertex->second; //reuse
     }
     else {
-        verticies.push_back(uint64_t3(u64(rounded.x), u64(rounded.y), u64(rounded.z)));
+        verticies.push_back(lookup);
         vertex_map.insert(std::make_pair(lookup, verticies.size()));
     }
     return verticies.size();
 }
 
-uint64_t Mesh::uv(const double2& uv)
+int64_t Mesh::uv(const double2& uv)
 {
-    auto rounded = uv * 1000 + 0.5; //shift decimal right three, add 0.5, then truncate to int - to round.
-    uint64_t2 lookup{ u64(rounded.x), u64(rounded.y)};
+    //shift decimal right three, add 0.5
+    int64_t2 lookup{ 
+        i64(uv.x < 0 ? (uv.x * 1000.0d - 0.5) : (uv.x * 1000.0d + 0.5)), 
+        i64(uv.y < 0 ? (uv.y * 1000.0d - 0.5) : (uv.y * 1000.0d + 0.5))
+    };
     auto found_uv = uv_map.find(lookup);
     if (found_uv != uv_map.end()) {
         return found_uv->second; //reuse
     }
     else {
-        uv_coords.push_back(uint64_t2(u64(rounded.x), u64(rounded.y)));
+        uv_coords.push_back(lookup);
         uv_map.insert(std::make_pair(lookup, uv_coords.size()));
     }
     return uv_coords.size();
 }
 
-uint64_t Mesh::norm(const double3& normal)
+int64_t Mesh::norm(const double3& normal)
 {
-    auto rounded = normal * 1000 + 0.5; //shift decimal right three, add 0.5, then truncate to int - to round.
-    uint64_t3 lookup{ u64(rounded.x), u64(rounded.y), u64(rounded.z) };
+    int64_t3 lookup{ 
+        i64(normal.x < 0 ? (normal.x * 1000.0d - 0.5) : (normal.x * 1000.0d + 0.5)), 
+        i64(normal.y < 0 ? (normal.y * 1000.0d - 0.5) : (normal.y * 1000.0d + 0.5)), 
+        i64(normal.z < 0 ? (normal.z * 1000.0d - 0.5) : (normal.z * 1000.0d + 0.5))
+    };
     auto found_normal = normal_map.find(lookup);
     if (found_normal != normal_map.end()) {
         return found_normal->second; //reuse
     }
     else {
-        normal_coords.push_back(uint64_t3(u64(rounded.x), u64(rounded.y), u64(rounded.z)));
+        normal_coords.push_back(lookup);
         normal_map.insert(std::make_pair(lookup, normal_coords.size()));
     }
     return normal_coords.size();
@@ -105,17 +115,17 @@ bool Mesh::test_export_mesh() const
     return true;
 }
 
-void Mesh::write_vertex(const uint64_t3& vertex, std::ostream& file) const
+void Mesh::write_vertex(const int64_t3& vertex, std::ostream& file) const
 {
     file << "v " << d(vertex.x) << " " << d(vertex.y) << " " << d(vertex.z) << std::endl;
 }
 
-void Mesh::write_uv(const uint64_t2& uv, std::ostream& file) const
+void Mesh::write_uv(const int64_t2& uv, std::ostream& file) const
 {
     file << "vt " << d(uv.x) << " " << d(uv.y) << std::endl;
 }
 
-void Mesh::write_normal(const uint64_t3& normal, std::ostream& file) const
+void Mesh::write_normal(const int64_t3& normal, std::ostream& file) const
 {
     file << "vn " << d(normal.x) << " " << d(normal.y) << " " << d(normal.z) << std::endl;
 }
