@@ -13,18 +13,17 @@ bool Mesh::export_mesh(char* filename, bool export_normals) const
             for (auto & norm : normal_coords)
                 write_normal(norm, meshfile);
         }
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < faces.size(); i++) {
             if(!faces[i].empty()) {
                 meshfile << "g " << i + 1 << std::endl;
                 for (auto face : faces[i])
                     write_face(face, meshfile, export_normals);
             } else { // empty group, but still needs defined as the next definable or if none are left, break twice, we're done here
                 bool noMoreToFill = true;
-                for(int j = i; j < 6; j++) {
+                for(int j = i; j < faces.size(); j++) {
                     if(!faces[j].empty()) {
                         noMoreToFill = false;
                         meshfile << "g " << i + 1 << std::endl;
-                        meshfile << "j:" << j << " i:" << i << std::endl;
                         for(auto face : faces[j]) {
                             write_face(face, meshfile, export_normals); //only get the first face to reduce duplicates
                             break;
@@ -63,9 +62,9 @@ int64_t Mesh::vert(const double3& vertex)
 {
     //shift decimal right three, add 0.5, then truncate to int - to round.
     int64_t3 lookup{ 
-        i64(vertex.x < 0 ? (vertex.x * 1000.0d - 0.5) : (vertex.x * 1000.0d + 0.5)), 
-        i64(vertex.y < 0 ? (vertex.y * 1000.0d - 0.5) : (vertex.y * 1000.0d + 0.5)), 
-        i64(vertex.z < 0 ? (vertex.z * 1000.0d - 0.5) : (vertex.z * 1000.0d + 0.5))
+        i64(vertex.x < 0 ? (vertex.x * 1000.0 - 0.5) : (vertex.x * 1000.0 + 0.5)), 
+        i64(vertex.y < 0 ? (vertex.y * 1000.0 - 0.5) : (vertex.y * 1000.0 + 0.5)), 
+        i64(vertex.z < 0 ? (vertex.z * 1000.0 - 0.5) : (vertex.z * 1000.0 + 0.5))
     };
     auto found_vertex = vertex_map.find(lookup);
     if (found_vertex != vertex_map.end()) {
@@ -82,8 +81,8 @@ int64_t Mesh::uv(const double2& uv)
 {
     //shift decimal right three, add 0.5
     int64_t2 lookup{ 
-        i64(uv.x < 0 ? (uv.x * 1000.0d - 0.5) : (uv.x * 1000.0d + 0.5)), 
-        i64(uv.y < 0 ? (uv.y * 1000.0d - 0.5) : (uv.y * 1000.0d + 0.5))
+        i64(uv.x < 0 ? (uv.x * 1000.0 - 0.5) : (uv.x * 1000.0 + 0.5)), 
+        i64(uv.y < 0 ? (uv.y * 1000.0 - 0.5) : (uv.y * 1000.0 + 0.5))
     };
     auto found_uv = uv_map.find(lookup);
     if (found_uv != uv_map.end()) {
@@ -98,10 +97,11 @@ int64_t Mesh::uv(const double2& uv)
 
 int64_t Mesh::norm(const double3& normal)
 {
+    double3 norm = normalize(normal);
     int64_t3 lookup{ 
-        i64(normal.x < 0 ? (normal.x * 1000.0d - 0.5) : (normal.x * 1000.0d + 0.5)), 
-        i64(normal.y < 0 ? (normal.y * 1000.0d - 0.5) : (normal.y * 1000.0d + 0.5)), 
-        i64(normal.z < 0 ? (normal.z * 1000.0d - 0.5) : (normal.z * 1000.0d + 0.5))
+        i64(norm.x < 0 ? (norm.x * 1000.0 - 0.5) : (norm.x * 1000.0 + 0.5)), 
+        i64(norm.y < 0 ? (norm.y * 1000.0 - 0.5) : (norm.y * 1000.0 + 0.5)), 
+        i64(norm.z < 0 ? (norm.z * 1000.0 - 0.5) : (norm.z * 1000.0 + 0.5))
     };
     auto found_normal = normal_map.find(lookup);
     if (found_normal != normal_map.end()) {

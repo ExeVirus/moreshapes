@@ -5,14 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug",
-            "type": "gdb",
+            "name": "C++ (Windows) Launch",
+            "type": "cppvsdbg", // Or "cppgdb" if you're using MinGW/GDB
             "request": "launch",
-            "target": "./build/morecurves.exe",
-            "cwd": "${workspaceRoot}",
-            "valuesFormatting": "parseText",
-            "arguments": "run.lua",
-            "terminal": ""
+            "program": "${workspaceFolder}\\build\\Debug\\morecurves.exe", // Adjust if your executable naming is different
+            "args": ["more_curves.lua"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}/../morecurves/",
+            "environment": [],
+            "externalConsole": false,
         }
     ]
 }
