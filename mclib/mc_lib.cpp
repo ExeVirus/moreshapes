@@ -13,11 +13,26 @@ bool Mesh::export_mesh(char* filename, bool export_normals) const
             for (auto & norm : normal_coords)
                 write_normal(norm, meshfile);
         }
-        for (int i = 0; i < faces.size(); i++) {
+        for (int i = 0; i < 6; i++) {
             if(!faces[i].empty()) {
                 meshfile << "g " << i + 1 << std::endl;
-                for (auto & face : faces[i])
+                for (auto face : faces[i])
                     write_face(face, meshfile, export_normals);
+            } else { // empty group, but still needs defined as the next definable or if none are left, break twice, we're done here
+                bool noMoreToFill = true;
+                for(int j = i; j < 6; j++) {
+                    if(!faces[j].empty()) {
+                        noMoreToFill = false;
+                        meshfile << "g " << i + 1 << std::endl;
+                        meshfile << "j:" << j << " i:" << i << std::endl;
+                        for(auto face : faces[j]) {
+                            write_face(face, meshfile, export_normals); //only get the first face to reduce duplicates
+                            break;
+                        }
+                        break; //found the next one, just break
+                    }
+                }
+                if (noMoreToFill) break;
             }
         }
         meshfile.close();
